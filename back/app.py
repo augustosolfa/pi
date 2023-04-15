@@ -26,3 +26,11 @@ def index():
 @app.route('/<path:path>')
 def root(path):
     return send_from_directory(os.path.join(os.getcwd(), 'front') , path)
+
+@app.route('/data')
+def data():
+    return {
+        'datas': df_criosfera["Data"].dt.strftime('%Y-%m-%d').tolist(),
+        'temperaturas': df_criosfera["Temperatura"].tolist(),
+        'precipitacoes': df_criosfera["Precipitacao"].tolist()
+    }

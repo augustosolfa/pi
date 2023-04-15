@@ -1,3 +1,5 @@
 # Dados RAW ultrapassam 6GB, ultrapassando o limite do Github. Pode ser obtida em https://portal.inmet.gov.br/dadoshistoricos
 back/data/raw
 back/teste
+
+__pycache__

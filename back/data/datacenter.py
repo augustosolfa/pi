@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 import os
 import os.path
@@ -8,6 +9,7 @@ import itertools
 
 class DataCenter:
     file = os.path.join(os.path.dirname(__file__), 'dataframe.feather')
+    dataframe = None
 
     def __init__(self):
         if (os.path.isfile(self.file)):
@@ -15,6 +17,9 @@ class DataCenter:
             print(f"[info] Utilizando dados pré gravados em {self.file}")
         else:
             self.dataframe = self.extract_data()
+
+    def getDataFrame(self):
+        return self.dataframe
 
     def extract_data(self):
         rawdir = os.path.join(os.path.dirname(__file__), 'raw')
@@ -27,7 +32,8 @@ class DataCenter:
             for file in files:
                 separatedFiles.append(readFile(os.path.join(root, file)))
                 counter += 1
-                print(f'\r{counter}/{totalfiles} {int(counter/totalfiles*100)}% dos arquivos lidos', end='')
+                print(
+                    f'\r{counter}/{totalfiles} {int(counter/totalfiles*100)}% dos arquivos lidos', end='')
         df = pd.concat(separatedFiles, ignore_index=True)
         df.to_feather(self.file)
         print('\n[info] Dados extraídos e gravados em ' + self.file)
@@ -46,16 +52,21 @@ def readFile(file):
         encoding='cp1252',
         skiprows=8,
         sep=';',
-        usecols=[0, 1, 2, 7],
+        usecols=[0, 2, 7],
         header=0,
-        names=['_Data', '_Hora', 'Precipitacao', 'Temperatura'],
-        parse_dates={'Data': [0, 1]},
+        names=['_Data', 'Precipitacao', 'Temperatura'],
+        parse_dates={'Data': [0]},
         decimal=','
     )
+    df.loc[df.Precipitacao <0, 'Precipitacao'] = np.nan
+    df.loc[df.Temperatura < -100, 'Temperatura'] = np.nan
     df = df.groupby(df['Data'].dt.date).agg(
-        {'Precipitacao': 'sum', 'Temperatura': 'median'})
+        {'Data': 'min', 'Precipitacao': 'sum', 'Temperatura': 'median'})
+    df.dropna(subset=['Precipitacao', 'Temperatura'], how='all', inplace=True)
 
     addHeader(df, file)
+    df = df[df.Data > df.Inicio]
+
     return df
 
 
@@ -86,4 +97,4 @@ def toDate(strDate):
 
 if __name__ == '__main__':
     datacenter = DataCenter()
-    print(datacenter.dataframe)
+    print(datacenter.getDataFrame())

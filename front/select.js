@@ -24,3 +24,16 @@ function atualizarAnos() {
       anoInicial.value = anoFinal.value;
     }
   }
+
+function selecionarRegiao() {
+    const regiao = document.getElementById('regiao-select')
+    const estado = document.getElementById('estado-select')
+
+    if (regiao.value != "Todas") {
+        estado.value = "Todos"
+        estado.disabled = true
+    }
+    else {
+        estado.disabled = false
+    }
+}

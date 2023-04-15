@@ -12,7 +12,7 @@
 
 <body>
     <label for="regiao-select">Região:</label>
-    <select id="regiao-select">
+    <select id="regiao-select" onchange="selecionarRegiao()">
         <option value="Todas">Todas</option>
     </select>
     
@@ -30,7 +30,7 @@
 
     </select>
 
-    <button autofocus="True" type="button">
+    <button autofocus="True" type="button" onclick="drawData()">
         Desenhar
     </button>
 

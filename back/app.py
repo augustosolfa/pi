@@ -9,7 +9,11 @@ assert df is not None
 df_criosfera = df[df['Estacao'] == 'CRIOSFERA']
 df = df[df['Estacao'] != 'CRIOSFERA']
 
-print(os.path.join(os.getcwd(), 'front'))
+appoptions = {
+        'regioes':  sorted(df.Regiao.unique().tolist()),
+        'estados': sorted(df.Estado.unique().tolist()),
+        'anos': sorted(df.Data.dt.year.unique().tolist())
+    }
 
 app = Flask(__name__)
 
@@ -34,3 +38,7 @@ def data():
         'temperaturas': df_criosfera["Temperatura"].tolist(),
         'precipitacoes': df_criosfera["Precipitacao"].tolist()
     }
+
+@app.route('/options')
+def options():
+    return appoptions

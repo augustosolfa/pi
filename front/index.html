@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,8 +9,33 @@
 
     <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
 </head>
+
 <body>
+    <label for="regiao-select">Região:</label>
+    <select id="regiao-select">
+        <option value="Todas">Todas</option>
+    </select>
+    
+    <label for="estado-select">Estado:</label>
+    <select id="estado-select">
+        <option value="Todos">Todos</option>
+    </select>
+
+    <label for="ano-inicial">Ano Inicial:</label>
+    <select id="ano-inicial" onchange="atualizarAnos()">
+    </select>
+
+    <label for="ano-final">Ano Final:</label>
+    <select id="ano-final" onchange="atualizarAnos()">
+
+    </select>
+
+    <button autofocus="True" type="button">
+        Desenhar
+    </button>
+
     <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
 </body>
+<script src="select.js"></script>
 <script src="index.js"></script>
 </html>

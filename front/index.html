@@ -20,14 +20,20 @@
     <select id="estado-select">
         <option value="Todos">Todos</option>
     </select>
-
+    
     <label for="ano-inicial">Ano Inicial:</label>
     <select id="ano-inicial" onchange="atualizarAnos()">
     </select>
-
+    
     <label for="ano-final">Ano Final:</label>
     <select id="ano-final" onchange="atualizarAnos()">
-
+        
+    </select>
+    
+    <label for="type-select">Estado:</label>
+    <select id="type-select">
+        <option value="scatter">Linha</option>
+        <option value="box">BoxPlot</option>
     </select>
 
     <button autofocus="True" type="button" onclick="drawData()">

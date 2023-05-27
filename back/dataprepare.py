@@ -3,7 +3,7 @@ import math
 def dataprepare(df, request):
     _df = local(df, request['regiao'], request['estado'])
 
-    _df = anos(df, request['tipo'], int(request['anoinicial']), int(request['anofinal']))
+    _df = anos(df, request['tipo'], int(request['anoinicial']), int(request['anofinal']), request['excluirparciais'])
 
     _df = _df.groupby(_df['Data'].dt.year, as_index=False)
     years = []
@@ -40,7 +40,7 @@ def local(df, regiao, estado):
     return _df
 
 
-def anos(df, tipo, inicial, final):
+def anos(df, tipo, inicial, final, excluirparciais):
     if tipo == "scatter":
         meio = math.floor((inicial + final) / 2)
         df = df[((df['Data'].dt.year == inicial) | (
@@ -50,6 +50,8 @@ def anos(df, tipo, inicial, final):
     else:
         df = df[(df['Data'].dt.year >= inicial) & (
             df['Data'].dt.year <= final) & (df['Temperatura'].notna())]
+    if excluirparciais:
+        df = df[df['Inicio'].dt.year < inicial]
     df = df.groupby(df['Data'], as_index=False,
                       sort=True).agg({'Temperatura': 'mean'})
     

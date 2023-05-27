@@ -1,4 +1,5 @@
 from data.datacenter import DataCenter
+from dataprepare import dataprepare
 
 from flask import Flask, send_from_directory, redirect, request
 import os
@@ -51,40 +52,7 @@ def options():
 @app.route('/data', methods=['POST'])
 def data():
     data = request.get_json()
-    if (data['regiao'] != 'Todas'):
-        _df = df[df['Regiao'] == data['regiao']]
-    elif ((data['estado']) != 'Todos'):
-        _df = df[df['Estado'] == data['estado']]
-    else:
-        _df = df
-
-    _df = _df[(_df['Data'].dt.year >= int(data['anoinicial'])) & (
-        _df['Data'].dt.year <= int(data['anofinal'])) & (_df['Temperatura'].notna())]
-    _df = _df.groupby(_df['Data'], as_index=False,
-                      sort=True).agg({'Temperatura': 'mean'})
-
-    _df = _df.groupby(_df['Data'].dt.year, as_index=False)
-    years = []
-    for name, group in _df:
-        year = {
-            'type': data['tipo'],
-            'name': name,
-            'y': group['Temperatura'].tolist()
-        }
-        if data['tipo'] == "scatter":
-            year['x'] = group['Data'].dt.strftime('1900-%m-%d').tolist()
-        years.append(year)
-
-    layout = {}
-
-    if data['tipo'] == "scatter":
-        layout = {
-            'xaxis': {
-                'tickformat': '%b'
-            }
-        }
-
-    return {'data': years, 'layout': layout}
+    return dataprepare(df, data)
 
 
 if __name__ == "__main__":

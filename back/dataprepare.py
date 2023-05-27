@@ -1,15 +1,9 @@
-def dataprepare(df, request):
-    if (request['regiao'] != 'Todas'):
-        _df = df[df['Regiao'] == request['regiao']]
-    elif ((request['estado']) != 'Todos'):
-        _df = df[df['Estado'] == request['estado']]
-    else:
-        _df = df
+import math
 
-    _df = _df[(_df['Data'].dt.year >= int(request['anoinicial'])) & (
-        _df['Data'].dt.year <= int(request['anofinal'])) & (_df['Temperatura'].notna())]
-    _df = _df.groupby(_df['Data'], as_index=False,
-                      sort=True).agg({'Temperatura': 'mean'})
+def dataprepare(df, request):
+    _df = local(df, request['regiao'], request['estado'])
+
+    _df = anos(df, request['tipo'], int(request['anoinicial']), int(request['anofinal']))
 
     _df = _df.groupby(_df['Data'].dt.year, as_index=False)
     years = []
@@ -33,3 +27,30 @@ def dataprepare(df, request):
         }
 
     return {'data': years, 'layout': layout}
+
+
+def local(df, regiao, estado):
+    if (regiao != 'Todas'):
+        _df = df[df['Regiao'] == regiao]
+    elif ((estado) != 'Todos'):
+        _df = df[df['Estado'] == estado]
+    else:
+        _df = df
+
+    return _df
+
+
+def anos(df, tipo, inicial, final):
+    if tipo == "scatter":
+        meio = math.floor((inicial + final) / 2)
+        df = df[((df['Data'].dt.year == inicial) | (
+            df['Data'].dt.year == final) | (
+            df['Data'].dt.year == meio)) & (
+            df['Temperatura'].notna())]
+    else:
+        df = df[(df['Data'].dt.year >= inicial) & (
+            df['Data'].dt.year <= final) & (df['Temperatura'].notna())]
+    df = df.groupby(df['Data'], as_index=False,
+                      sort=True).agg({'Temperatura': 'mean'})
+    
+    return df

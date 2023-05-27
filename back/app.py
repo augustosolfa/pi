@@ -1,5 +1,6 @@
 from data.datacenter import DataCenter
 from dataprepare import dataprepare
+from mlprediction import predict
 
 from flask import Flask, send_from_directory, redirect, request
 import os

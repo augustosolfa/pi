@@ -1,32 +1,20 @@
 import math
 
+from mlprediction import predict
+
 def dataprepare(df, request):
+    tipo = request['tipo']
+    anoinicial = int(request['anoinicial'])
+    anofinal = int(request['anofinal'])
+    excluirparciais = request['excluirparciais']
+
     _df = local(df, request['regiao'], request['estado'])
 
-    _df = anos(df, request['tipo'], int(request['anoinicial']), int(request['anofinal']), request['excluirparciais'])
+    predict_anos = predict(_df, tipo, anoinicial, anofinal, excluirparciais)
 
-    _df = _df.groupby(_df['Data'].dt.year, as_index=False)
-    years = []
-    for name, group in _df:
-        year = {
-            'type': request['tipo'],
-            'name': name,
-            'y': group['Temperatura'].tolist()
-        }
-        if request['tipo'] == "scatter":
-            year['x'] = group['Data'].dt.strftime('1900-%m-%d').tolist()
-        years.append(year)
+    _df = anos(df, tipo, anoinicial, anofinal, excluirparciais)
 
-    layout = {}
-
-    if request['tipo'] == "scatter":
-        layout = {
-            'xaxis': {
-                'tickformat': '%b'
-            }
-        }
-
-    return {'data': years, 'layout': layout}
+    return {"real": packageData(_df, tipo), "previsto": packageData(predict_anos, tipo)}
 
 
 def local(df, regiao, estado):
@@ -52,7 +40,31 @@ def anos(df, tipo, inicial, final, excluirparciais):
             df['Data'].dt.year <= final) & (df['Temperatura'].notna())]
     if excluirparciais:
         df = df[df['Inicio'].dt.year < inicial]
-    df = df.groupby(df['Data'], as_index=False,
+    df = df.groupby('Data', as_index=False,
                       sort=True).agg({'Temperatura': 'mean'})
     
     return df
+
+def packageData(df, tipo):
+    df = df.groupby(df['Data'].dt.year, as_index=False)
+    years = []
+    for name, group in df:
+        year = {
+            'type': tipo,
+            'name': name,
+            'y': group['Temperatura'].tolist()
+        }
+        if tipo == "scatter":
+            year['x'] = group['Data'].dt.strftime('1900-%m-%d').tolist()
+        years.append(year)
+
+    layout = {}
+
+    if tipo == "scatter":
+        layout = {
+            'xaxis': {
+                'tickformat': '%b'
+            }
+        }
+
+    return {'data': years, 'layout': layout}

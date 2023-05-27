@@ -94,7 +94,6 @@ def toDate(strDate):
     except:
         return pd.to_datetime(strDate, format="%d/%m/%y")
 
-
 if __name__ == '__main__':
     datacenter = DataCenter()
     print(datacenter.getDataFrame())

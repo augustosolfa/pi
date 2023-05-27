@@ -17,7 +17,10 @@ function drawData() {
         body: JSON.stringify(options)
     })
         .then(response => response.json())
-        .then(response => Plotly.newPlot('myDiv', response.data, response.layout))
+        .then(response => {
+            Plotly.newPlot('myDiv', response.real.data, response.real.layout),
+            Plotly.newPlot('myDiv2', response.previsto.data, response.previsto.layout)
+        })
 
 }
 

@@ -10,7 +10,7 @@ def dataprepare(df, request):
 
     _df = local(df, request['regiao'], request['estado'])
 
-    predict_anos = predict(_df, tipo, anoinicial, anofinal, excluirparciais)
+    predict_anos = predict(_df, tipo, anoinicial, anofinal, request['maxdepth'])
 
     _df = anos(df, tipo, anoinicial, anofinal, excluirparciais)
 

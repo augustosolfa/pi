@@ -6,7 +6,8 @@ function drawData() {
         anoinicial: document.getElementById('ano-inicial').value,
         anofinal: document.getElementById('ano-final').value,
         tipo: document.getElementById('type-select').value,
-        excluirparciais: document.getElementById('excluirparciais').checked
+        excluirparciais: document.getElementById('excluirparciais').checked,
+        maxdepth: document.getElementById('maxdepth').value
     }
     
     fetch('/data', {

@@ -45,7 +45,17 @@
 
     <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
 
-    <p>Veja a previsão de nosso modelo de Machine Learning:</p>
+    <p>Veja a previsão de nosso modelo de Machine Learning para 2050:</p>
+    <div>
+        <span>sklearn.tree.DecisionTreeRegressor</span>
+        <label for="maxdepth">Selecione o parâmetro <i>max_depth</i> para ver o resultado:</label>
+        <select id="maxdepth">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20" selected>20</option>
+        </select>
+    </div>
 
     <div id='myDiv2'></div>
 </body>
